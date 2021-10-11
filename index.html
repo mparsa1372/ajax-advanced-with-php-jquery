@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidCode.IR</title>
+    <script src="lib/jquery.min.js"></script>
+    <style>
+		body{
+			text-align : center;
+			overflow-x : hidden;
+		}
+		
+		#introduce{
+			color: white;
+			text-decoration: none;
+    		font-weight: bold;
+    		display: block;
+    		width: 100%;
+    		padding: 5px 10px;
+    		background-color: #4CAF50;
+    		text-align: center;
+    		font-size: 25px;
+			margin-bottom : 45px;
+		}
+		
+		#file{
+			display : none;
+		}
+		
+		#upload{
+			background-color : orange;
+			color : black;
+			padding : 5px 20px;
+			font-size : 16px;
+			font-weight : bold;
+		    outline : none;
+			border : none;
+		}
+		
+		.progress-container{
+			width : 300px;
+			margin-left : calc((100% - 300px) / 2);
+		}
+		
+		.progress-container #fill-progress{
+			    background-color: #673AB7;
+				color: yellow;
+				display: block;
+				height: 7px;
+				width : 0;
+		}
+		
+		.progress-container #number-progress{
+			display : block;
+			width : 100%;
+			margin-top : 15px;
+			text-align : center;
+		}
+    </style>
+
+
+</head>
+
+<body>
+    <a id="introduce" target="_blank" href="https://rapidcode.ir">رپید کد - کتابخانه مجازی برنامه نویسان</a>
+
+	
+	<form>
+	<div class="progress-container">
+	<span id="fill-progress"></span>
+	<span id="number-progress">0 %</span>
+	</div>
+	<input type="file" id="file" name="file">
+	<input type="button" id="upload" value="آپلود">
+	</form>
+	
+
+    <script>
+		$('#upload').click(openDialog);
+		$('#file').change(upload);
+		
+		function openDialog(){
+			$('#file').click();
+		}
+		
+		
+		function upload(e){
+			//console.log(e);
+		const form = $('form')[0];
+		const dataForm = new FormData(form);
+		
+		
+		
+		$.post({
+			url : "upload.php",
+			data : dataForm ,
+			processData : false,
+			contentType : false,
+			success : function(res){
+			
+				console.log(res);
+			
+			},
+			error : function(err){
+			
+				console.log('error : ' + err);
+			
+			},
+			xhr : function(e){
+				var xhr = new XMLHttpRequest();
+				
+				
+				xhr.upload.addEventListener('progress' , function(e){
+					var loaded = e.loaded;
+					var total = e.total;
+					var progress = (loaded / total * 100).toFixed(0);
+					// number-progress , fill-progress
+					$('#number-progress').text(progress + "%");
+					$('#fill-progress').css("width" , progress + "%");
+					
+				
+				});
+				
+				
+				return xhr;
+			
+			}
+		
+		});
+		
+		}
+		
+		
+		
+    </script>
+</body>
+
+</html>
